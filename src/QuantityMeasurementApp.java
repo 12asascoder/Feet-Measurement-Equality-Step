@@ -2,10 +2,12 @@ import java.util.Scanner;
 
 public class QuantityMeasurementApp {
 
-    // Step 1: Enum with conversion to base unit (FEET)
+    // Extended Enum (Base unit = FEET)
     enum LengthUnit {
         FEET(1.0),
-        INCH(1.0 / 12.0);
+        INCH(1.0 / 12.0),
+        YARD(3.0),                  // 1 yard = 3 feet
+        CENTIMETER(0.0328084);      // 1 cm ≈ 0.0328084 feet
 
         private final double toFeetFactor;
 
@@ -18,7 +20,7 @@ public class QuantityMeasurementApp {
         }
     }
 
-    // Step 2: Generic QuantityLength class (DRY)
+    // Generic class (UNCHANGED from UC3)
     static class QuantityLength {
         private final double value;
         private final LengthUnit unit;
@@ -31,7 +33,6 @@ public class QuantityMeasurementApp {
             this.unit = unit;
         }
 
-        // Convert to base unit (feet)
         private double toFeet() {
             return unit.toFeet(value);
         }
@@ -54,11 +55,15 @@ public class QuantityMeasurementApp {
         }
     }
 
-    // Helper: parse unit from user
+    // Parse unit from user
     private static LengthUnit parseUnit(String input) {
-        if (input.equalsIgnoreCase("ft")) return LengthUnit.FEET;
-        if (input.equalsIgnoreCase("in")) return LengthUnit.INCH;
-        throw new IllegalArgumentException("Invalid unit. Use ft/in");
+        switch (input.toLowerCase()) {
+            case "ft": return LengthUnit.FEET;
+            case "in": return LengthUnit.INCH;
+            case "yd": return LengthUnit.YARD;
+            case "cm": return LengthUnit.CENTIMETER;
+            default: throw new IllegalArgumentException("Invalid unit! Use ft/in/yd/cm");
+        }
     }
 
     public static void main(String[] args) {
@@ -70,21 +75,19 @@ public class QuantityMeasurementApp {
             System.out.print("Enter first value: ");
             double v1 = scanner.nextDouble();
 
-            System.out.print("Enter first unit (ft/in): ");
+            System.out.print("Enter first unit (ft/in/yd/cm): ");
             LengthUnit u1 = parseUnit(scanner.next());
 
             // Input 2
             System.out.print("Enter second value: ");
             double v2 = scanner.nextDouble();
 
-            System.out.print("Enter second unit (ft/in): ");
+            System.out.print("Enter second unit (ft/in/yd/cm): ");
             LengthUnit u2 = parseUnit(scanner.next());
 
-            // Create objects
             QuantityLength q1 = new QuantityLength(v1, u1);
             QuantityLength q2 = new QuantityLength(v2, u2);
 
-            // Compare
             boolean result = q1.equals(q2);
 
             System.out.println("Result: Equal (" + result + ")");
